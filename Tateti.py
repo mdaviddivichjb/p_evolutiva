@@ -61,8 +61,7 @@ def resultado_algoritmo(tablero,tabla_estados,l_vacios):
     estado_f = jugada_aux[3]
     res_aux = [x for x in l_vacios if x == jugada_cero]
     if (len(res_aux) < 1):
-        jugada = randint(0,(len(l_vacios)-1))
-        jugada_cero = l_vacios[jugada]
+        return [0,0]
 
     return [jugada_cero,estado_f]
 
@@ -101,8 +100,9 @@ def simulo_juego (tabla_estados):
     l_vacios = [1,2,3,4,5,6,7,8,9]
     estado = 1
     hay_ganador = False
+    res_invalido = False
 
-    while hay_vacios(tablero) and (not(hay_ganador)):
+    while hay_vacios(tablero) and (not(hay_ganador)) and (not(res_invalido)):
 
         jugada = randint(0,(len(l_vacios)-1))
         jugada_cruz = l_vacios[jugada]
@@ -117,14 +117,19 @@ def simulo_juego (tabla_estados):
 
         if (len(l_vacios) >0 and (not(hay_ganador))):
             jugada_res = resultado_algoritmo(tablero,tabla_estados,l_vacios)
-
-            jugada_cero = jugada_res[0]
-            estado = jugada_res[1]
-            res = marco_jugada(tablero,jugada_cero,2,l_vacios)
-            tablero = res[0]
-            l_vacios = res[1]
+            # Me fijo si el resultado del algoritmo fue un valor invalido
+            if (jugada_res[1] == 0):
+                # Resultado invalida
+                return 4
+            else:
+                jugada_cero = jugada_res[0]
+                estado = jugada_res[1]
+                res = marco_jugada(tablero,jugada_cero,2,l_vacios)
+                tablero = res[0]
+                l_vacios = res[1]
 
             hay_ganador = busco_ganador(tablero)
+
             if hay_ganador:
                 return 2
     return 0
@@ -350,7 +355,6 @@ resultados = []
 
 # Genero la poblacion de individuos
 poblacion = genero_poblacion(c_indiv,c_estados)
-
 
 sigue_jugando = int(input("Quiere seguir"))
 
